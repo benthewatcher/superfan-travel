@@ -1,0 +1,21 @@
+/* ----------  Superfan base styles  ---------- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{--superfan-red:#ff1e42;}
+
+html,body{margin:0;padding:0;background:#000;color:#fff;font-family:Inter,system-ui,sans-serif;}
+
+input,select,button{border-radius:8px;padding:14px;font-size:1rem;}
+
+.cta{background:var(--superfan-red);color:#fff;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.cta:hover{transform:scale(1.04);box-shadow:0 4px 12px rgba(255,30,66,0.4);}
+
+.results-card{background:#111;border:1px solid var(--superfan-red);border-radius:12px;padding:18px;white-space:pre-wrap;}
+
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+@keyframes slide-up{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+.animate-fade-in{animation:fade-in .6s ease-out both;}
+.animate-slide-up{animation:slide-up .5s .15s ease-out both;}
