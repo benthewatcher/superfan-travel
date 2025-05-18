@@ -85,9 +85,44 @@ export default function Home() {
                 {card.emoji ? `${card.emoji} ` : ''}
                 {card.title}
               </strong>
+
               {card.subtitle && (
                 <div style={{ marginTop: 6, fontSize: 15, lineHeight: 1.4 }}>
                   {card.subtitle}
+                </div>
+              )}
+
+              {card.image && (
+                <div style={{ marginTop: 10 }}>
+                  <img src={card.image} alt="pub preview" style={{ width: '100%', borderRadius: 8 }} />
+                </div>
+              )}
+
+              {card.embed && (
+                <div style={{ marginTop: 12 }}>
+                  <iframe
+                    src={card.embed}
+                    width="100%"
+                    height="300"
+                    style={{ border: 0, borderRadius: 10 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+              )}
+
+              {card.link && (
+                <div style={{ marginTop: 12 }}>
+                  <a
+                    href={card.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="cta"
+                    style={{ padding: '8px 12px', fontSize: 14 }}
+                  >
+                    Open Link
+                  </a>
                 </div>
               )}
             </div>
