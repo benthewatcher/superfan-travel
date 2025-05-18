@@ -1,6 +1,36 @@
 import OpenAI from 'openai';
+import fetch from 'node-fetch';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function getPubDetails(pubName, apiKey) {
+  try {
+    const search = await fetch(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(pubName)}&key=${apiKey}`);
+    const searchData = await search.json();
+    const place = searchData.results[0];
+    if (!place) return null;
+
+    const placeId = place.place_id;
+    const details = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,photos,url&key=${apiKey}`);
+    const detailsData = await details.json();
+    const info = detailsData.result;
+
+    const photoRef = info.photos?.[0]?.photo_reference;
+    const photoUrl = photoRef
+      ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photoRef}&key=${apiKey}`
+      : null;
+
+    return {
+      name: info.name,
+      address: info.formatted_address,
+      link: info.url,
+      image: photoUrl
+    };
+  } catch (e) {
+    console.error("Pub lookup failed:", e);
+    return null;
+  }
+}
 
 function safeJSON(text) {
   const cleaned = text
@@ -21,55 +51,38 @@ export default async function handler(req, res) {
   if (!origin || !club) return res.status(400).json({ error: 'Missing origin / club' });
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      temperature: 0.6,
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a football travel concierge. Reply ONLY in raw JSON: { "cards": [...] } with subtitle, link, image, or embed fields where relevant.'
-        },
-        {
-          role: 'user',
-          content: `Plan a matchday trip from ${origin} to watch ${club}. Return 4 cards with subtitle, and where relevant: \n- a Trainline link, \n- a pub photo + Google Maps link, \n- a Google Maps walking embed from pub to stadium, \n- a kickoff message.`
-        }
-      ]
+    const mapsKey = process.env.MAPS_API_KEY;
+
+    const pubData = await getPubDetails("The Twelve Pins Finsbury Park London", mapsKey);
+    const cards = [];
+
+    cards.push({
+      title: "Train to London",
+      subtitle: "LNER from York to King's Cross. Stops: York → Peterborough → Stevenage → King's Cross.",
+      link: "https://www.thetrainline.com/"
     });
 
-    const raw = completion.choices[0].message.content;
-    console.log('RAW GPT RESPONSE:', raw);
-
-    const json = safeJSON(raw);
-    if (json && Array.isArray(json.cards) && json.cards[0]?.title) {
-      return res.status(200).json(json);
-    }
-
-    return res.status(200).json({
-      cards: [
-        {
-          title: "Train to London",
-          subtitle: "Take LNER from York to King's Cross. Avg: £40, 2h 15m.",
-          link: "https://www.thetrainline.com/"
-        },
-        {
-          title: "Pre-Match Pub",
-          subtitle: "The Twelve Pins — 263 Seven Sisters Rd, Arsenal pub. 0.4 miles from stadium.",
-          image: "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=CmRaAAAAr9...fakesample&key=AIzaSyC0tPqc35B0xDtklGyTY5D9Ei95OZv7AuY",
-          link: "https://www.google.com/maps/place/The+Twelve+Pins+N4+2DE"
-        },
-        {
-          title: "Walk to the Stadium",
-          subtitle: "Leave by 2:45 PM to reach Emirates by 3 PM.",
-          embed: "https://www.google.com/maps/embed/v1/directions?key=AIzaSyC0tPqc35B0xDtklGyTY5D9Ei95OZv7AuY&origin=The+Twelve+Pins+N4+2DE&destination=Emirates+Stadium+N5+1BU&mode=walking"
-        },
-        {
-          title: "Kickoff",
-          subtitle: "Enjoy the match — you made it!"
-        }
-      ]
+    cards.push({
+      title: "Pre-Match Pub",
+      subtitle: pubData ? `${pubData.name} — ${pubData.address}` : "The Twelve Pins — Arsenal pub near Emirates.",
+      image: pubData?.image || "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/The_Twelve_Pins_pub_-_geograph.org.uk_-_1635929.jpg/640px-The_Twelve_Pins_pub_-_geograph.org.uk_-_1635929.jpg",
+      link: pubData?.link || "https://www.google.com/maps/place/The+Twelve+Pins+N4+2DE"
     });
+
+    cards.push({
+      title: "Walk to the Stadium",
+      subtitle: "Leave pub by 2:45 PM to reach Emirates by 3 PM.",
+      embed: `https://www.google.com/maps/embed/v1/directions?key=${mapsKey}&origin=The+Twelve+Pins+N4+2DE&destination=Emirates+Stadium+N5+1BU&mode=walking`
+    });
+
+    cards.push({
+      title: "Kickoff",
+      subtitle: "Enjoy the match — you made it!"
+    });
+
+    return res.status(200).json({ cards });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'OpenAI call failed', detail: err.message });
+    return res.status(500).json({ error: 'OpenAI or Google Maps call failed', detail: err.message });
   }
 }

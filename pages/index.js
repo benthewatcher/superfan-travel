@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 
 const premierLeagueTeams = [
@@ -13,6 +13,25 @@ export default function Home() {
   const [club, setClub] = useState('Arsenal');
   const [loading, setLoading] = useState(false);
   const [cards, setCards] = useState([]);
+  const [countdown, setCountdown] = useState('');
+
+  useEffect(() => {
+    const kickoff = new Date('2025-05-24T15:00:00+01:00').getTime();
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const diff = kickoff - now;
+      if (diff <= 0) {
+        setCountdown('Kickoff!');
+        clearInterval(interval);
+        return;
+      }
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   async function handlePlan(e) {
     e.preventDefault();
@@ -119,10 +138,25 @@ export default function Home() {
                     target="_blank"
                     rel="noreferrer"
                     className="cta"
-                    style={{ padding: '8px 12px', fontSize: 14 }}
+                    style={{
+                      padding: '10px 16px',
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                      backgroundColor: '#ff1e42',
+                      color: '#fff',
+                      borderRadius: 6,
+                      display: 'inline-block',
+                      textDecoration: 'none'
+                    }}
                   >
-                    Open Link
+                    Book Your Ticket Now →
                   </a>
+                </div>
+              )}
+
+              {card.title === 'Kickoff' && (
+                <div style={{ marginTop: 12, fontSize: 15 }}>
+                  ⏳ Kickoff in: {countdown}
                 </div>
               )}
             </div>
