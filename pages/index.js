@@ -131,7 +131,7 @@ export default function Home() {
               {card.embed && (
                 <div style={{ marginTop: 12 }}>
                   <iframe
-                    src={card.embed}
+                    src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyC0tPqc35B0xDtklGyTY5D9Ei95OZv7AuY&origin=The+Twelve+Pins+N4+2DE&destination=Emirates+Stadium+N5+1BU&mode=walking"
                     width="100%"
                     height="300"
                     style={{ border: 0, borderRadius: 10 }}
