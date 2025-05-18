@@ -25,8 +25,22 @@ export default async function handler(req, res) {
       model: 'gpt-4o-mini',
       temperature: 0.6,
       messages: [
-        { role: 'system', content: 'You are a football travel concierge. Reply ONLY in raw JSON: { "cards": [...] }' },
-        { role: 'user', content: `Plan a cheap, fan-friendly match-day trip from ${origin} to watch ${club}. Break it into cards (train, pub, walk, kickoff).` }
+        {
+          role: 'system',
+          content: 'You are a football travel concierge. Reply ONLY in raw JSON like this:
+{
+  "cards": [
+    { "title": "Train to London", "subtitle": "Take LNER from York to King's Cross. Avg £40, 2h 10m." },
+    { "title": "Pre-Match Pub", "subtitle": "The Twelve Pins – Arsenal pub, 10 min walk to Emirates." },
+    { "title": "Walk to the Stadium", "subtitle": "Leave by 2:45 PM to arrive by 3 PM." },
+    { "title": "Kickoff", "subtitle": "Enjoy the match and the atmosphere!" }
+  ]
+}'
+        },
+        {
+          role: 'user',
+          content: `Plan a cheap, fan-friendly match-day trip from ${origin} to watch ${club}. Follow the exact format above and include subtitle details.`
+        }
       ]
     });
 
@@ -38,11 +52,10 @@ export default async function handler(req, res) {
       return res.status(200).json(json);
     }
 
-    // fallback card data
     return res.status(200).json({
       cards: [
         { title: "Train to London", subtitle: "Take LNER from York to King's Cross. Avg: £40, 2h 15m." },
-        { title: "Pre-Match Pub", subtitle: "Grab drinks at The Twelve Pins — Arsenal-friendly, 10 mins from stadium." },
+        { title: "Pre-Match Pub", subtitle: "The Twelve Pins – Arsenal-friendly pub, 10 min from stadium." },
         { title: "Walk to the Stadium", subtitle: "Leave pub by 2:45 PM to reach Emirates by 3:00 PM." },
         { title: "Kickoff", subtitle: "Enjoy the match — you made it!" }
       ]
