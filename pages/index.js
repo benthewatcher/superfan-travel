@@ -25,10 +25,11 @@ export default function Home() {
         clearInterval(interval);
         return;
       }
-      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -101,8 +102,9 @@ export default function Home() {
           {cards.map((card, idx) => (
             <div key={idx} className="results-card animate-slide-up">
               <strong style={{ fontSize: 18 }}>
-                {card.emoji ? `${card.emoji} ` : ''}
-                {card.title}
+                {(card.title.includes('Train') && '🚆 ') ||
+                 (card.title.includes('Tube') && '🚇 ') ||
+                 ''}{card.title}
               </strong>
 
               {card.subtitle && (
@@ -112,9 +114,18 @@ export default function Home() {
               )}
 
               {card.image && (
-                <div style={{ marginTop: 10 }}>
-                  <img src={card.image} alt="pub preview" style={{ width: '100%', borderRadius: 8 }} />
-                </div>
+                <img
+                  src={card.image}
+                  alt="pub preview"
+                  style={{
+                    width: '180px',
+                    height: 'auto',
+                    borderRadius: 6,
+                    objectFit: 'cover',
+                    display: 'block',
+                    marginTop: 8
+                  }}
+                />
               )}
 
               {card.embed && (
@@ -134,7 +145,7 @@ export default function Home() {
               {card.link && (
                 <div style={{ marginTop: 12 }}>
                   <a
-                    href={card.link}
+                    href="https://wa.me/?text=Let’s meet at the pub before kickoff!"
                     target="_blank"
                     rel="noreferrer"
                     className="cta"
@@ -149,7 +160,7 @@ export default function Home() {
                       textDecoration: 'none'
                     }}
                   >
-                    Book Your Ticket Now →
+                    Start a Group Meetup →
                   </a>
                 </div>
               )}
