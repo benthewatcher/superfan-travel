@@ -32,11 +32,15 @@ export default async function handler(req, res) {
 
     const cards = [];
 
-    // Merged Train + Tube
     cards.push({
-      title: "Train + Tube to Emirates Stadium",
-      subtitle: `Train from ${origin} to ${info.arrivalStation}. Common stops: York → Stevenage → King's Cross. Then take the Piccadilly Line to Arsenal (approx. 11 mins). Stops: King's Cross → Russell Square → Caledonian Road → Arsenal.`,
-      link: "https://www.thetrainline.com/"
+      title: "Train to London King's Cross",
+      subtitle: `From ${origin} to ${info.arrivalStation}. Common stops: York → Stevenage → King's Cross.`,
+      link: "https://www.thetrainline.com"
+    });
+
+    cards.push({
+      title: "Tube to Stadium",
+      subtitle: "Piccadilly Line from King's Cross to Arsenal (approx. 11 mins). Stops: King's Cross → Russell Square → Caledonian Road → Arsenal."
     });
 
     cards.push({
