@@ -2,25 +2,10 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 
 const premierLeagueTeams = [
-  'Arsenal',
-  'Aston Villa',
-  'Bournemouth',
-  'Brentford',
-  'Brighton',
-  'Chelsea',
-  'Crystal Palace',
-  'Everton',
-  'Fulham',
-  'Liverpool',
-  'Luton',
-  'Man City',
-  'Man United',
-  'Newcastle',
-  'Nottm Forest',
-  'Sheff Utd',
-  'Tottenham',
-  'West Ham',
-  'Wolves',
+  'Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton',
+  'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Liverpool',
+  'Luton', 'Man City', 'Man United', 'Newcastle', 'Nottm Forest',
+  'Sheff Utd', 'Tottenham', 'West Ham', 'Wolves'
 ];
 
 export default function Home() {
@@ -40,15 +25,11 @@ export default function Home() {
       const res = await fetch('/api/plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, club }),
+        body: JSON.stringify({ origin, club })
       });
 
       const data = await res.json();
-      setCards(
-        data.cards || [
-          { title: 'Error', subtitle: data.error || 'Unknown issue' },
-        ],
-      );
+      setCards(data.cards || [{ title: 'Error', subtitle: data.error || 'Unknown issue' }]);
     } catch (err) {
       console.error(err);
       setCards([{ title: 'Error', subtitle: err.message }]);
@@ -72,10 +53,7 @@ export default function Home() {
           Plan the perfect trip in seconds — powered by AI
         </p>
 
-        <form
-          onSubmit={handlePlan}
-          style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}
-        >
+        <form onSubmit={handlePlan} style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <input
             placeholder="Your city"
             value={origin}
