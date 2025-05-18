@@ -85,18 +85,9 @@ export default function Home() {
                 {card.emoji ? `${card.emoji} ` : ''}
                 {card.title}
               </strong>
-              {card.subtitle && <div style={{ marginTop: 6 }}>{card.subtitle}</div>}
-              {card.link && (
-                <div style={{ marginTop: 12 }}>
-                  <a
-                    href={card.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="cta"
-                    style={{ padding: '8px 12px', fontSize: 14 }}
-                  >
-                    Open Link
-                  </a>
+              {card.subtitle && (
+                <div style={{ marginTop: 6, fontSize: 15, lineHeight: 1.4 }}>
+                  {card.subtitle}
                 </div>
               )}
             </div>
