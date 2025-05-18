@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import fetch from 'node-fetch';
+import { clubs } from '../../utils/clubs';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -52,27 +53,28 @@ export default async function handler(req, res) {
 
   try {
     const mapsKey = process.env.MAPS_API_KEY;
+    const info = clubs[club] || {};
 
-    const pubData = await getPubDetails("The Twelve Pins Finsbury Park London", mapsKey);
+    const pubData = await getPubDetails(info.pubSearch, mapsKey);
     const cards = [];
 
     cards.push({
-      title: "Train to London",
-      subtitle: "LNER from York to King's Cross. Stops: York → Peterborough → Stevenage → King's Cross.",
+      title: `Train to ${info.arrivalStation || 'London'}`,
+      subtitle: `From ${origin} to ${info.arrivalStation || 'London'}. Common stops: York → Stevenage → King's Cross.`,
       link: "https://www.thetrainline.com/"
     });
 
     cards.push({
       title: "Pre-Match Pub",
       subtitle: pubData ? `${pubData.name} — ${pubData.address}` : "The Twelve Pins — Arsenal pub near Emirates.",
-      image: pubData?.image || "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/The_Twelve_Pins_pub_-_geograph.org.uk_-_1635929.jpg/640px-The_Twelve_Pins_pub_-_geograph.org.uk_-_1635929.jpg",
+      image: pubData?.image || "https://live.staticflickr.com/2120/2505261057_f4280f62b4_o.jpg",
       link: pubData?.link || "https://www.google.com/maps/place/The+Twelve+Pins+N4+2DE"
     });
 
     cards.push({
       title: "Walk to the Stadium",
-      subtitle: "Leave pub by 2:45 PM to reach Emirates by 3 PM.",
-      embed: `https://www.google.com/maps/embed/v1/directions?key=${mapsKey}&origin=The+Twelve+Pins+N4+2DE&destination=Emirates+Stadium+N5+1BU&mode=walking`
+      subtitle: "Leave pub by 2:45 PM to reach stadium by 3 PM.",
+      embed: `https://www.google.com/maps/embed/v1/directions?key=${mapsKey}&origin=The+Twelve+Pins+N4+2DE&destination=${encodeURIComponent(info.stadium || 'Emirates Stadium')},${info.postcode || 'N5 1BU'}&mode=walking`
     });
 
     cards.push({
