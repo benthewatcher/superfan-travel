@@ -49,7 +49,7 @@ export default function Home() {
       });
 
       const data = await res.json();
-      setCards(data.cards || [{ title: 'Error', subtitle: data.error || 'Unknown issue' }]);
+      setCards(data.cards || []);
     } catch (err) {
       console.error(err);
       setCards([{ title: 'Error', subtitle: err.message }]);
@@ -104,6 +104,9 @@ export default function Home() {
               <strong style={{ fontSize: 18 }}>
                 {(card.title.includes('Train') && '🚆 ') ||
                  (card.title.includes('Tube') && '🚇 ') ||
+                 (card.title.includes('Pub') && '🍻 ') ||
+                 (card.title.includes('Walk') && '🚶 ') ||
+                 (card.title.includes('Kickoff') && '🎯 ') ||
                  ''}{card.title}
               </strong>
 
@@ -131,7 +134,7 @@ export default function Home() {
               {card.embed && (
                 <div style={{ marginTop: 12 }}>
                   <iframe
-                    src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyC0tPqc35B0xDtklGyTY5D9Ei95OZv7AuY&origin=The+Twelve+Pins+N4+2DE&destination=Emirates+Stadium+N5+1BU&mode=walking"
+                    src={card.embed}
                     width="100%"
                     height="300"
                     style={{ border: 0, borderRadius: 10 }}
@@ -142,10 +145,10 @@ export default function Home() {
                 </div>
               )}
 
-              {card.link && (
+              {card.title === "Train to London King's Cross" && (
                 <div style={{ marginTop: 12 }}>
                   <a
-                    href="https://wa.me/?text=Let’s meet at the pub before kickoff!"
+                    href="https://www.thetrainline.com"
                     target="_blank"
                     rel="noreferrer"
                     className="cta"
@@ -154,6 +157,29 @@ export default function Home() {
                       fontSize: 15,
                       fontWeight: 'bold',
                       backgroundColor: '#ff1e42',
+                      color: '#fff',
+                      borderRadius: 6,
+                      display: 'inline-block',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    Book your tickets →
+                  </a>
+                </div>
+              )}
+
+              {card.title === "Pre-Match Pub" && (
+                <div style={{ marginTop: 12 }}>
+                  <a
+                    href={card.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="cta"
+                    style={{
+                      padding: '10px 16px',
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                      backgroundColor: '#00a884',
                       color: '#fff',
                       borderRadius: 6,
                       display: 'inline-block',
