@@ -32,22 +32,18 @@ export default async function handler(req, res) {
 
     const cards = [];
 
+    // Merged Train + Tube
     cards.push({
-      title: `Train to ${info.arrivalStation}`,
-      subtitle: `From ${origin} to ${info.arrivalStation}. Common stops: York → Stevenage → King's Cross.`,
+      title: "Train + Tube to Emirates Stadium",
+      subtitle: `Train from ${origin} to ${info.arrivalStation}. Common stops: York → Stevenage → King's Cross. Then take the Piccadilly Line to Arsenal (approx. 11 mins). Stops: King's Cross → Russell Square → Caledonian Road → Arsenal.`,
       link: "https://www.thetrainline.com/"
-    });
-
-    cards.push({
-      title: "Tube to Stadium",
-      subtitle: "Piccadilly Line from King's Cross to Arsenal (approx. 11 mins). Stops: King's Cross → Russell Square → Caledonian Road → Arsenal."
     });
 
     cards.push({
       title: "Pre-Match Pub",
       subtitle: "The Twelve Pins — 263 Seven Sisters Rd, Arsenal pub. 0.4 miles from stadium.",
       image: "https://live.staticflickr.com/2120/2505261057_f4280f62b4_o.jpg",
-      link: "https://www.google.com/maps/place/The+Twelve+Pins+N4+2DE"
+      link: "https://wa.me/?text=Let’s meet at The Twelve Pins before the match!"
     });
 
     cards.push({
