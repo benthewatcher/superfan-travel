@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   if (!origin || !club) return res.status(400).json({ error: 'Missing origin / club' });
 
   try {
-    const mapsKey = process.env.MAPS_API_KEY;
+    const mapsKey = "AIzaSyAHAF0tigm3qWXo0OUD-8G8b1t0-6Rgxtw";
     const info = clubs[club] || {
       stadium: "Emirates Stadium",
       postcode: "N5 1BU",
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     cards.push({
       title: "Walk to the Stadium",
       subtitle: "Leave pub by 2:45 PM to reach Emirates by 3:00 PM.",
-      embed: `https://www.google.com/maps/embed/v1/directions?key=${mapsKey}&origin=The+Twelve+Pins+N4+2DE&destination=Emirates+Stadium+N5+1BU&mode=walking`
+      embed: "https://www.google.com/maps/embed/v1/directions?key=AIzaSyAHAF0tigm3qWXo0OUD-8G8b1t0-6Rgxtw&origin=The+Twelve+Pins+N4+2DE&destination=Emirates+Stadium+N5+1BU&mode=walking"
     });
 
     cards.push({
